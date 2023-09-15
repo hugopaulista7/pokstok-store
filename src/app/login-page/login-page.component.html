@@ -1,5 +1,47 @@
-<div>
-  aa
+<div
+  class="flex w-full h-screen align-items-center justify-content-start surface-200 flex-column pt-8"
+>
+  <icon></icon>
+  <p class="text-indigo-500 m-0 app-title">PokStok</p>
+  <div
+    class="flex w-6 h-6 surface-100 shadow-2 justify-content-center mt-4 border-round flex-column align-items-center p-3"
+  >
+    <h3 class="text-indigo-500 m-0 mb-4">Login</h3>
 
-  <p-button label="Submit"></p-button>
+    <div
+      class="mb-4 w-full flex justify-content-center flex-column align-items-center"
+    >
+      <div class="field w-7">
+        <label for="email" class="text-indigo-500">Email</label>
+        <input
+          [(ngModel)]="email"
+          type="email"
+          name="email"
+          class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        />
+      </div>
+
+      <div class="field w-7">
+        <label for="password" class="text-indigo-500">Password</label>
+        <input
+          [(ngModel)]="password"
+          type="password"
+          name="password"
+          class="text-base text-color surface-overlay mb-3 p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+        />
+
+        <a class="text-indigo-500 mt-2 hover:underline cursor-pointer"
+          >Forgot password?</a
+        >
+      </div>
+      <div class="flex justify-content-between w-7">
+        <p-button styleClass="p-button-outlined">Sign Up</p-button>
+        <p-button (onClick)="emailLogin()">Login</p-button>
+      </div>
+    </div>
+
+    <cool-google-button (click)="googleLogin()">
+      Login with Google
+    </cool-google-button>
+  </div>
 </div>
