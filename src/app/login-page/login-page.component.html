@@ -1,5 +1,184 @@
-<div>
-  aa
+<div
+  class="flex w-full h-screen align-items-center justify-content-start surface-200 flex-column pt-8"
+>
+  <icon></icon>
+  <p class="text-indigo-500 m-0 app-title">PokStok</p>
+  <div
+    class="flex w-6 h-6 surface-100 shadow-2 justify-content-center mt-4 border-round flex-column align-items-center p-3"
+  >
+    <div *ngIf="activeForm == 'login'" class="w-full">
+      <h3 class="text-indigo-500 m-0 mb-4 w-full text-center">Login</h3>
 
-  <p-button label="Submit"></p-button>
+      <div
+        class="mb-4 w-full flex justify-content-center flex-column align-items-center"
+      >
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Email</label>
+          <input
+            [(ngModel)]="email"
+            type="email"
+            name="email"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+        </div>
+
+        <div class="field w-7">
+          <label for="password" class="text-indigo-500">Password</label>
+          <input
+            [(ngModel)]="password"
+            type="password"
+            name="password"
+            class="text-base text-color surface-overlay mb-3 p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+
+          <a
+            class="text-indigo-500 mt-2 hover:underline cursor-pointer"
+            (click)="showResetPassword()"
+            >Forgot password?</a
+          >
+        </div>
+        <div class="flex justify-content-between w-7">
+          <p-button styleClass="p-button-outlined" (onClick)="showSignUp()"
+            >Sign Up</p-button
+          >
+          <p-button (onClick)="emailLogin()">Login</p-button>
+        </div>
+        <div class="w-7 mt-4">
+          <cool-google-button (click)="googleLogin()">
+            Login with Google
+          </cool-google-button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeForm == 'signup'" class="w-full">
+      <h3 class="text-indigo-500 m-0 mb-4 text-center">Sign Up</h3>
+
+      <form
+        [formGroup]="signUpForm"
+        class="flex justify-content-center flex-column align-items-center"
+      >
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Name</label>
+          <input
+            formControlName="name"
+            type="text"
+            name="text"
+            minlength="6"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['name'].errors?.['required']"
+          >
+            Name is required.
+          </span>
+        </div>
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Email</label>
+          <input
+            formControlName="email"
+            type="email"
+            name="email"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['email'].errors?.['required']"
+          >
+            The email is required.
+          </span>
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['email'].errors?.['email']"
+          >
+            Email is invalid.
+          </span>
+        </div>
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Password</label>
+          <input
+            formControlName="password"
+            type="password"
+            name="password"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['password'].errors?.['required']"
+          >
+            The password field is required.
+          </span>
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['password'].errors?.['minlength']"
+          >
+            The password must have at least 8 characters.
+          </span>
+        </div>
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Confirm Password</label>
+          <input
+            formControlName="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="isSubmitted && errorControl['confirmPassword'].errors?.['required']"
+          >
+            The field 'Confirm Password' is required.
+          </span>
+          <span
+            class="error text-red-500 mt-2"
+            *ngIf="signUpForm.errors?.['passwordNotMatch']"
+          >
+            The passwords must match.
+          </span>
+        </div>
+
+        <div class="flex justify-content-between w-7 align-items-center">
+          <p-button styleClass="p-button-outlined" (onClick)="cancelSignUp()"
+            >Cancel
+          </p-button>
+          <p-button [disabled]="!signUpForm.valid" (onClick)="submit()">
+            <p-progressSpinner
+              styleClass="w-1rem h-1rem"
+              strokeWidth="4"
+              fill="var(--surface-ground)"
+              animationDuration=".5s"
+              *ngIf="isLoading"
+            ></p-progressSpinner>
+            <label *ngIf="!isLoading"> Confirm </label>
+          </p-button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="activeForm == 'reset'" class="w-full">
+      <h3 class="text-indigo-500 m-0 mb-4 w-full text-center">
+        Reset Password
+      </h3>
+      <div
+        class="mb-4 w-full flex justify-content-center flex-column align-items-center"
+      >
+        <div class="field w-7">
+          <label for="email" class="text-indigo-500">Email</label>
+          <input
+            [(ngModel)]="email"
+            type="email"
+            name="email"
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
+          />
+        </div>
+        <div class="w-7 text-right">
+          <p-button [disabled]="!email.length" (onClick)="resetPassword()"
+            >Confirm</p-button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
