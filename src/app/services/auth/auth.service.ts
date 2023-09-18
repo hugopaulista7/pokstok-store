@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { auth } from 'src/app/app.component';
 import * as authFirebase from 'firebase/auth';
+import { UserSignup } from 'src/app/models/user.signup';
+import { User } from 'src/app/models/user.session';
+import { StorageService } from '../storage/storage.service';
 
+const USERSESSION = 'user_session_saved';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor() {}
+  constructor(private storage: StorageService) {}
+
+  sessionUser: User | null = null;
 
   googleAuth() {
     const provider = new authFirebase.GoogleAuthProvider();
@@ -15,8 +21,33 @@ export class AuthService {
   }
 
   emailAuth(email: string, password: string) {
-    const provider = new authFirebase.EmailAuthProvider();
-    return authFirebase.signInWithEmailAndPassword(auth, email, password);
+    return new Promise((resolve, reject) => {
+      const provider = new authFirebase.EmailAuthProvider();
+      authFirebase
+        .signInWithEmailAndPassword(auth, email, password)
+        .then((response) => {
+          response.user.getIdToken().then((token) => {
+            this.sessionUser = {
+              token,
+              email,
+            };
+
+            this.storage.saveToStorage(USERSESSION, this.sessionUser);
+          });
+        });
+    });
+  }
+
+  signUp(data: UserSignup) {
+    return authFirebase.createUserWithEmailAndPassword(
+      auth,
+      data.email,
+      data.password
+    );
+  }
+
+  resetPassword(email: string) {
+    return authFirebase.sendPasswordResetEmail(auth, email);
   }
 
   private fireAuth(provider: any) {
@@ -25,14 +56,19 @@ export class AuthService {
     });
   }
 
-  private handleSocialSignIn(response: any) {
+  private handleSocialSignIn(response: authFirebase.UserCredential) {
     const credential =
       authFirebase.GoogleAuthProvider.credentialFromResult(response);
-    console.log('credential:: ', credential);
     const token = credential?.accessToken;
+    this.sessionUser = {
+      token: token as string,
+      email: response.user.email as string,
+    };
+
+    this.storage.saveToStorage(USERSESSION, this.sessionUser);
   }
 
   async signOut() {
-    // await auth.signOut(getAuth(this.app));
+    await auth.signOut();
   }
 }
