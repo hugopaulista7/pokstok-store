@@ -1,0 +1,26 @@
+header {
+  border-bottom: 1px solid var(--indigo-50);
+  border-radius: 2px;
+
+  nav {
+    height: 80px;
+    a {
+      transition: 0.5s ease all;
+    }
+  }
+
+  .phone {
+    transition: 0.5s ease all;
+  }
+  .login-button {
+    height: 40px;
+    transition: 0.5s ease all;
+    font-size: 14px;
+    text-decoration: none;
+  }
+}
+.app-title {
+  letter-spacing: 2px;
+  font-weight: 700;
+  font-size: 40px;
+}
